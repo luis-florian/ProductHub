@@ -1,0 +1,22 @@
+﻿using ProductHub.Database.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ProductHub.Database.Contract
+{
+    public interface IProductService
+    {
+        Task<Product> Create(Product product);
+        Task<Product> Update(Product product);
+        Task<Product> Get(int id);
+        Task<List<Product>> Get();
+        Task<Product> GetProductsByCategory(int idCategory);
+        Task<Product> AddImagesToProduct(int id, List<Image> images);
+        Task<Product> DeleteImagesToProduct(int id, List<Image> images);
+        Task<Product> AddCommentToProduct(int id, Comment comment);
+        Task<Product> DeleteCommentToProduct(int id, Comment comment);
+    }
+}
