@@ -17,49 +17,97 @@ namespace ProductHub.Database.Services
         {
             this._context = context;
         }
-        public Task<Product> AddCommentToProduct(int id, Comment comment)
+        public async Task<Product> Create(Product product)
         {
-            throw new NotImplementedException();
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+
+            return product;
+        }
+        public async Task<Product> Get(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+
+            return product;
+        }
+        public async Task<List<Product>> Get()
+        {
+            return await _context.Products.ToListAsync();
+        }
+        public async Task<Product> Update(Product product)
+        {
+            var _product = await _context.Products.FindAsync(product.Id);
+
+            if (_product is not null)
+            {
+                _product.Name = product.Name;
+                _product.Description = product.Description;
+                _product.Stock = product.Stock;
+                _product.Price = product.Price;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return _product;
+        }
+        public async Task<List<Product>> GetProductsByCategory(int idCategory)
+        {
+            return  await _context.Products.Where(c => c.CategoryId == idCategory).ToListAsync();
         }
 
-        public Task<Product> AddImagesToProduct(int id, List<Image> images)
+        public async Task<Product> AddCommentToProduct(int id, Comment comment)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(id);
+
+            product.Comments.Add(comment);
+
+            await _context.SaveChangesAsync();
+
+            return product;
         }
 
-        public Task<Product> Create(Product product)
+        public async Task<Product> AddImagesToProduct(int id, List<Image> images)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(id);
+
+            foreach (var image in images)
+            {
+                product.Images.Add(image);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return product;
         }
 
-        public Task<Product> DeleteCommentToProduct(int id, Comment comment)
+        public async Task<Product> DeleteCommentToProduct(int id, List<int> commentsId)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(id);
+            var comment = product.Comments.Where(c => c.Equals(commentsId)).FirstOrDefault();
+
+            if (comment != null)
+            {
+                _context.Comments.Remove(comment);
+                await _context.SaveChangesAsync();
+                return product;
+            }
+
+            return null;
         }
 
-        public Task<Product> DeleteImagesToProduct(int id, List<Image> images)
+        public async Task<Product> DeleteImagesToProduct(int id, List<int> imagesId)
         {
-            throw new NotImplementedException();
-        }
+            var product = await _context.Products.FindAsync(id);
+            var images = product.Images.Where(c => c.Equals(imagesId)).FirstOrDefault();
 
-        public Task<Product> Get(int id)
-        {
-            throw new NotImplementedException();
-        }
+            if (images != null)
+            {
+                _context.Images.Remove(images);
+                await _context.SaveChangesAsync();
+                return product;
+            }
 
-        public Task<List<Product>> Get()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Product> GetProductsByCategory(int idCategory)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Product> Update(Product product)
-        {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

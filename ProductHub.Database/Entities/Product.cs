@@ -17,7 +17,6 @@ namespace ProductHub.Database.Entities
         public int CategoryId { get; set; }
         public required Category Category { get; set; }
 
-        // Navigation Properties
         public ICollection<Image>? Images { get; set; }
         public ICollection<Comment>? Comments { get; set; }
     }

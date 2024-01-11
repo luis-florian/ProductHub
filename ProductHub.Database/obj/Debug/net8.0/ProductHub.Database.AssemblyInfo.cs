@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProductHub.Database")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2b1a70103db28f80949f4046dc4e2f6b3a1f096")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProductHub.Database")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProductHub.Database")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

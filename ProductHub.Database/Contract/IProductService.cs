@@ -13,10 +13,10 @@ namespace ProductHub.Database.Contract
         Task<Product> Update(Product product);
         Task<Product> Get(int id);
         Task<List<Product>> Get();
-        Task<Product> GetProductsByCategory(int idCategory);
+        Task<List<Product>> GetProductsByCategory(int idCategory);
         Task<Product> AddImagesToProduct(int id, List<Image> images);
-        Task<Product> DeleteImagesToProduct(int id, List<Image> images);
+        Task<Product> DeleteImagesToProduct(int id, List<int> imagesId);
         Task<Product> AddCommentToProduct(int id, Comment comment);
-        Task<Product> DeleteCommentToProduct(int id, Comment comment);
+        Task<Product> DeleteCommentToProduct(int id, List<int> commentsId);
     }
 }
