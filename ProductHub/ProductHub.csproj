@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProductHub.Database\ProductHub.Database.csproj" />
+    <ProjectReference Include="..\ProductHub.Storage\ProductHub.Storage.csproj" />
   </ItemGroup>
 
 </Project>

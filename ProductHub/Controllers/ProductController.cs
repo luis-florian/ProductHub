@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductHub.Database.Contract;
 using ProductHub.Database.Entities;
+using ProductHub.Model;
 using ProductHub.Model.Dto;
+using ProductHub.Storage.Contract;
 
 namespace ProductHub.Controllers
 {
@@ -12,11 +14,13 @@ namespace ProductHub.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IImageService _imageService;
         private readonly IMapper _mapper;
-        public ProductController(IMapper mapper, IProductService productService)
+        public ProductController(IMapper mapper, IProductService productService, IImageService imageService)
         {
             _productService = productService;
             _mapper = mapper;
+            _imageService = imageService;
         }
 
         [Route("{id}")]
@@ -99,14 +103,19 @@ namespace ProductHub.Controllers
 
         [HttpPost]
         [Route("images")]
-        public async Task<ActionResult<ProductDto>> AddImagesProduct([FromBody] CreateProductDto createProductDto)
+        public async Task<ActionResult<ProductDto>> AddImagesProduct([FromForm] FileUpload file)
         {
-            var product = _mapper.Map<Product>(createProductDto);
-            var _product = await _productService.Create(product);
+            if (file == null || file.files.Length == 0)
+            {
+                return BadRequest("Invalid file.");
+            }
 
-            var ProductDto = _mapper.Map<ProductDto>(_product);
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.files.FileName);
 
-            return Ok(ProductDto);
+            using var stream = file.files.OpenReadStream();
+            var result = await _imageService.Upload(fileName, stream);
+
+            return Ok(new { FilePath = result });
         }
     }
 }

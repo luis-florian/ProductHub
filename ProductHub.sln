@@ -5,7 +5,9 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductHub", "ProductHub\ProductHub.csproj", "{4351E6F5-E9DF-4F20-BF89-197B2DFD1CCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductHub.Database", "ProductHub.Database\ProductHub.Database.csproj", "{D4A63D06-8DE0-4502-86E0-EA808CE1DE0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductHub.Database", "ProductHub.Database\ProductHub.Database.csproj", "{D4A63D06-8DE0-4502-86E0-EA808CE1DE0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductHub.Storage", "ProductHub.Storage\ProductHub.Storage.csproj", "{5C0FA7AC-9CB6-473D-B322-7638F4BA91F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{D4A63D06-8DE0-4502-86E0-EA808CE1DE0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4A63D06-8DE0-4502-86E0-EA808CE1DE0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4A63D06-8DE0-4502-86E0-EA808CE1DE0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C0FA7AC-9CB6-473D-B322-7638F4BA91F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C0FA7AC-9CB6-473D-B322-7638F4BA91F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C0FA7AC-9CB6-473D-B322-7638F4BA91F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C0FA7AC-9CB6-473D-B322-7638F4BA91F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

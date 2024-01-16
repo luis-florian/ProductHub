@@ -2,6 +2,8 @@ using ProductHub.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using ProductHub.Database.Contract;
 using ProductHub.Database.Services;
+using ProductHub.Storage.Contract;
+using ProductHub.Storage.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IImageService, ImageService>();
 
 var app = builder.Build();
 
