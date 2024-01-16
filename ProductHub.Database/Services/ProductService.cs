@@ -26,13 +26,20 @@ namespace ProductHub.Database.Services
         }
         public async Task<Product> Get(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products
+                .Include(c => c.Category)
+                .Include(c => c.Comments)
+                    .ThenInclude(c => c.User)
+                .SingleOrDefaultAsync(p => p.Id == id);
 
             return product;
         }
         public async Task<List<Product>> Get()
         {
-            return await _context.Products.ToListAsync();
+            return await _context.Products
+                .Include(c => c.Category)
+                .Include(c => c.Comments)
+                .ToListAsync();
         }
         public async Task<Product> Update(Product product)
         {
@@ -55,9 +62,9 @@ namespace ProductHub.Database.Services
             return  await _context.Products.Where(c => c.CategoryId == idCategory).ToListAsync();
         }
 
-        public async Task<Product> AddCommentToProduct(int id, Comment comment)
+        public async Task<Product> AddCommentToProduct(Comment comment)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.Include(p => p.Comments).FirstOrDefaultAsync(p => p.Id == comment.ProductId);
 
             product.Comments.Add(comment);
 
