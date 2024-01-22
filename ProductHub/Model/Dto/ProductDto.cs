@@ -11,6 +11,7 @@ namespace ProductHub.Model.Dto
         public int Stock { get; set; }
         public required CategoryDto Category { get; set; }
         public ICollection<CommentDto>? Comments { get; set; }
+        public ICollection<ImageDto>? Images { get; set; }
     }
 
     public class CreateProductDto

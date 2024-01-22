@@ -115,7 +115,33 @@ namespace ProductHub.Controllers
             using var stream = file.files.OpenReadStream();
             var result = await _imageService.Upload(fileName, stream);
 
+            CreateImageDto createImageDto = new() { Url = result.FileName, ProductId = file.productId };
+
+            var image = _mapper.Map<Image>(createImageDto);
+
+            var r = await _productService.AddImagesToProduct([image]);
+
             return Ok(new { FilePath = result });
+        }
+
+        [HttpDelete]
+        [Route("comment")]
+        public async Task<ActionResult> DeleteCommentFromProduct([FromBody] DeleteCommentDto deleteCommentDto)
+        {
+            var comment = _mapper.Map<Comment>(deleteCommentDto);
+            var response = await _productService.DeleteCommentToProduct(comment);
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        [Route("Image")]
+        public async Task<ActionResult> DeleteImageFromProduct([FromBody] DeleteImageDto deleteImageDto)
+        {
+            var result = _imageService.Delete(deleteImageDto.Url);
+            var image = _mapper.Map<Image>(deleteImageDto);
+            var response = await _productService.DeleteImageToProduct(image);
+
+            return Ok(response);
         }
     }
 }

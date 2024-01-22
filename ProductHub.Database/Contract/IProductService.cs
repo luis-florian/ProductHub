@@ -14,9 +14,9 @@ namespace ProductHub.Database.Contract
         Task<Product> Get(int id);
         Task<List<Product>> Get();
         Task<List<Product>> GetProductsByCategory(int idCategory);
-        Task<Product> AddImagesToProduct(int id, List<Image> images);
-        Task<Product> DeleteImagesToProduct(int id, List<int> imagesId);
+        Task<Product> AddImagesToProduct(List<Image> images);
+        Task<Product> DeleteImageToProduct(Image image);
         Task<Product> AddCommentToProduct(Comment comment);
-        Task<Product> DeleteCommentToProduct(int id, List<int> commentsId);
+        Task<Product> DeleteCommentToProduct(Comment comments);
     }
 }

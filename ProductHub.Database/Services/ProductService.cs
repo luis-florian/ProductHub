@@ -28,6 +28,7 @@ namespace ProductHub.Database.Services
         {
             var product = await _context.Products
                 .Include(c => c.Category)
+                .Include(c => c.Images)
                 .Include(c => c.Comments)
                     .ThenInclude(c => c.User)
                 .SingleOrDefaultAsync(p => p.Id == id);
@@ -73,9 +74,9 @@ namespace ProductHub.Database.Services
             return product;
         }
 
-        public async Task<Product> AddImagesToProduct(int id, List<Image> images)
+        public async Task<Product> AddImagesToProduct(List<Image> images)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.Include(p => p.Images).FirstOrDefaultAsync(p => p.Id == images.First().ProductId);
 
             foreach (var image in images)
             {
@@ -87,14 +88,14 @@ namespace ProductHub.Database.Services
             return product;
         }
 
-        public async Task<Product> DeleteCommentToProduct(int id, List<int> commentsId)
+        public async Task<Product> DeleteCommentToProduct(Comment comment)
         {
-            var product = await _context.Products.FindAsync(id);
-            var comment = product.Comments.Where(c => c.Equals(commentsId)).FirstOrDefault();
+            var product = await _context.Products.Include(p => p.Comments).FirstOrDefaultAsync(p => p.Id == comment.ProductId);
+            var _comment = product.Comments.Where(c => c.Id == comment.Id).FirstOrDefault();
 
-            if (comment != null)
+            if (_comment != null)
             {
-                _context.Comments.Remove(comment);
+                _context.Comments.Remove(_comment);
                 await _context.SaveChangesAsync();
                 return product;
             }
@@ -102,14 +103,14 @@ namespace ProductHub.Database.Services
             return null;
         }
 
-        public async Task<Product> DeleteImagesToProduct(int id, List<int> imagesId)
+        public async Task<Product> DeleteImageToProduct(Image image)
         {
-            var product = await _context.Products.FindAsync(id);
-            var images = product.Images.Where(c => c.Equals(imagesId)).FirstOrDefault();
+            var product = await _context.Products.Include(p => p.Images).FirstOrDefaultAsync(p => p.Id == image.ProductId);
+            var _image = product.Images.Where(c => c.Id == image.Id).FirstOrDefault();
 
-            if (images != null)
+            if (_image != null)
             {
-                _context.Images.Remove(images);
+                _context.Images.Remove(_image);
                 await _context.SaveChangesAsync();
                 return product;
             }

@@ -37,7 +37,8 @@ namespace ProductHub.Middleware
 
             this.CreateMap<Product, ProductDto>()
                 .ForMember(p => p.Category, opt => opt.MapFrom(src => src.Category))
-                .ForMember(p => p.Comments, opt => opt.MapFrom(src => src.Comments));
+                .ForMember(p => p.Comments, opt => opt.MapFrom(src => src.Comments))
+                .ForMember(p => p.Images, opt => opt.MapFrom(src => src.Images));
             this.CreateMap<Category, ProductDto>();
             this.CreateMap<Comment, ProductDto>();
             this.CreateMap<ProductDto, Product>();
@@ -54,7 +55,19 @@ namespace ProductHub.Middleware
             this.CreateMap<CommentDto, Comment>();
             this.CreateMap<User, CommentDto>();
 
+            this.CreateMap<Comment, DeleteCommentDto>();
+            this.CreateMap<DeleteCommentDto, Comment>();
 
+            // image
+
+            this.CreateMap<Image, ImageDto>();
+            this.CreateMap<ImageDto, Image>();
+
+            this.CreateMap<Image, CreateImageDto>();
+            this.CreateMap<CreateImageDto, Image>();
+
+            this.CreateMap<Image, DeleteImageDto>();
+            this.CreateMap<DeleteImageDto, Image>();
         }
     }
 }

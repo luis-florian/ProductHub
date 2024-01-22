@@ -1,4 +1,5 @@
-﻿using ProductHub.Storage.Contract;
+﻿using Microsoft.Extensions.Configuration;
+using ProductHub.Storage.Contract;
 using ProductHub.Storage.Model;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,16 @@ namespace ProductHub.Storage.Services
 {
     public class ImageService : IImageService
     {
-        async Task<ProcessResult> IImageService.Upload(string fileName, Stream fileStream)
+        private readonly string _imagePath;
+        public ImageService(IConfiguration configuration)
+        {
+            _imagePath = configuration["ImagesPath"] ?? "img";
+        }
+        public async Task<ProcessResult> Upload(string fileName, Stream fileStream)
         {
             if (fileStream != null && fileStream.Length > 0)
             {
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "images");
+                var path = GetPath();
                 
                 if (!File.Exists(path))
                 {
@@ -32,6 +38,34 @@ namespace ProductHub.Storage.Services
             }
 
             return new ProcessResult(string.Empty, false);
+        }
+
+        public Task<ProcessResult> Delete(string fileName)
+        {
+            var path = GetPath();
+
+            var filePath = Path.Combine(path, fileName);
+
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                    return Task.FromResult(new ProcessResult(filePath, true));
+                }
+                else
+                {
+                    return Task.FromResult(new ProcessResult($"File not found: {filePath}", false));
+                }
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(new ProcessResult($"Error deleting file: {ex.Message}", false));
+            }
+        }
+        private string GetPath()
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), _imagePath);
         }
     }
 }

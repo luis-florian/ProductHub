@@ -15,4 +15,10 @@ namespace ProductHub.Model.Dto
         public int ProductId { get; set; }
         public int UserId { get; set; }
     }
+
+    public class DeleteCommentDto
+    {
+        public int Id { get; set; }
+        public int ProductId { get; set; }
+    }
 }

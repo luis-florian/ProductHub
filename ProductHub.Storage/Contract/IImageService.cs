@@ -10,5 +10,7 @@ namespace ProductHub.Storage.Contract
     public interface IImageService
     {
         Task<ProcessResult> Upload(string fileName, Stream fileStream);
+
+        Task<ProcessResult> Delete(string fileName);
     }
 }
