@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 
 namespace ProductHub.Storage.Services
 {
-    public class ImageService : IImageService
+    public class ImageFileService : IImageFileService
     {
         private readonly string _imagePath;
-        public ImageService(IConfiguration configuration)
+        public ImageFileService(IConfiguration configuration)
         {
             _imagePath = configuration["ImagesPath"] ?? "img";
         }
+
         public async Task<ProcessResult> Upload(string fileName, Stream fileStream)
         {
             if (fileStream != null && fileStream.Length > 0)
@@ -42,23 +43,17 @@ namespace ProductHub.Storage.Services
 
         public Task<ProcessResult> Delete(string filePath)
         {
-            try
+            if (File.Exists(filePath))
             {
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                    return Task.FromResult(new ProcessResult(filePath, true));
-                }
-                else
-                {
-                    return Task.FromResult(new ProcessResult($"File not found: {filePath}", false));
-                }
+                File.Delete(filePath);
+                return Task.FromResult(new ProcessResult(filePath, true));
             }
-            catch (Exception ex)
+            else
             {
-                return Task.FromResult(new ProcessResult($"Error deleting file: {ex.Message}", false));
+                return Task.FromResult(new ProcessResult($"File not found: {filePath}", false));
             }
         }
+
         private string GetPath()
         {
             return Path.Combine(Directory.GetCurrentDirectory(), _imagePath);

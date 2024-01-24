@@ -15,9 +15,9 @@ namespace ProductHub.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-        private readonly IImageService _imageService;
+        private readonly IImageFileService _imageService;
         private readonly IMapper _mapper;
-        public ProductController(IMapper mapper, IProductService productService, IImageService imageService)
+        public ProductController(IMapper mapper, IProductService productService, IImageFileService imageService)
         {
             _productService = productService;
             _mapper = mapper;

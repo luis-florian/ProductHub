@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProductHub.Storage.Contract
 {
-    public interface IImageService
+    public interface IImageFileService
     {
         Task<ProcessResult> Upload(string fileName, Stream fileStream);
 
