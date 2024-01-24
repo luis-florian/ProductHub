@@ -117,5 +117,11 @@ namespace ProductHub.Database.Services
 
             return null;
         }
+
+        public async Task<Image> GetImageFromProduct(int idProduct, int idImage)
+        {
+            var product = await _context.Products.Include(p => p.Images).FirstOrDefaultAsync(p => p.Id == idProduct);
+            return product.Images.Where(c => c.Id == idImage).FirstOrDefault();
+        }
     }
 }

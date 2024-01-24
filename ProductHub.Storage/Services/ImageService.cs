@@ -40,12 +40,8 @@ namespace ProductHub.Storage.Services
             return new ProcessResult(string.Empty, false);
         }
 
-        public Task<ProcessResult> Delete(string fileName)
+        public Task<ProcessResult> Delete(string filePath)
         {
-            var path = GetPath();
-
-            var filePath = Path.Combine(path, fileName);
-
             try
             {
                 if (File.Exists(filePath))

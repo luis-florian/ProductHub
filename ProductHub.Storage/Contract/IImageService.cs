@@ -11,6 +11,6 @@ namespace ProductHub.Storage.Contract
     {
         Task<ProcessResult> Upload(string fileName, Stream fileStream);
 
-        Task<ProcessResult> Delete(string fileName);
+        Task<ProcessResult> Delete(string filePath);
     }
 }

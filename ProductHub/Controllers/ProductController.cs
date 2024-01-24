@@ -6,6 +6,7 @@ using ProductHub.Database.Entities;
 using ProductHub.Model;
 using ProductHub.Model.Dto;
 using ProductHub.Storage.Contract;
+using System.Transactions;
 
 namespace ProductHub.Controllers
 {
@@ -137,11 +138,18 @@ namespace ProductHub.Controllers
         [Route("Image")]
         public async Task<ActionResult> DeleteImageFromProduct([FromBody] DeleteImageDto deleteImageDto)
         {
-            var result = _imageService.Delete(deleteImageDto.Url);
-            var image = _mapper.Map<Image>(deleteImageDto);
-            var response = await _productService.DeleteImageToProduct(image);
-
-            return Ok(response);
+            try
+            {
+                var imageResult = await _productService.GetImageFromProduct(deleteImageDto.ProductId, deleteImageDto.Id);
+                var result = _imageService.Delete(imageResult.Url);
+                var image = _mapper.Map<Image>(deleteImageDto);
+                var response = await _productService.DeleteImageToProduct(image);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
         }
     }
 }

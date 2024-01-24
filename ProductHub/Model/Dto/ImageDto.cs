@@ -16,7 +16,6 @@ namespace ProductHub.Model.Dto
     public class DeleteImageDto
     {
         public int Id { get; set; }
-        public string Url { get; set; }
         public int ProductId { get; set; }
     }
 }

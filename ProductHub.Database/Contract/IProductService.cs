@@ -18,5 +18,6 @@ namespace ProductHub.Database.Contract
         Task<Product> DeleteImageToProduct(Image image);
         Task<Product> AddCommentToProduct(Comment comment);
         Task<Product> DeleteCommentToProduct(Comment comments);
+        Task<Image> GetImageFromProduct(int idProduct, int idImage);
     }
 }
