@@ -11,10 +11,10 @@ namespace ProductHub.Database.Entities
         public int Id { get; set; }
         public required string Content { get; set; }
 
-        public int ProductId { get; set; }
+        public required int ProductId { get; set; }
         public required Product Product { get; set; }
 
-        public int? UserId { get; set; }
+        public required int UserId { get; set; }
         public required User User { get; set; }
     }
 }

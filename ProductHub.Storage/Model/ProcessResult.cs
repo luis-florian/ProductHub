@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace ProductHub.Storage.Model
 {
-    public class ProcessResult(string filename, bool processedSuccessfully)
+    public class ProcessResult(string filePath, string message,  bool processedSuccessfully)
     {
-        public string FileName { get; } = filename;
+        public string FilePath { get; } = filePath;
         public bool ProcessedSuccessfully { get; } = processedSuccessfully;
+        public string Message { get; } = message;
     }
 }

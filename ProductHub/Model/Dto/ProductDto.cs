@@ -14,6 +14,17 @@ namespace ProductHub.Model.Dto
         public ICollection<ImageDto>? Images { get; set; }
     }
 
+    public class ProductsDto
+    {
+        public int Id { get; set; }
+        public required string Name { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public int Stock { get; set; }
+        public required CategoryDto Category { get; set; }
+        public ImageDto? Image { get; set; }
+    }
+
     public class CreateProductDto
     {
         public required string Name { get; set; }

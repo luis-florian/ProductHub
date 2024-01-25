@@ -9,13 +9,9 @@ using System.Threading.Tasks;
 
 namespace ProductHub.Storage.Services
 {
-    public class ImageFileService : IImageFileService
+    public class ImageFileService(IConfiguration configuration) : IImageFileService
     {
-        private readonly string _imagePath;
-        public ImageFileService(IConfiguration configuration)
-        {
-            _imagePath = configuration["ImagesPath"] ?? "img";
-        }
+        private readonly string _imagePath = configuration["ImagesPath"] ?? "img";
 
         public async Task<ProcessResult> Upload(string fileName, Stream fileStream)
         {
@@ -35,10 +31,12 @@ namespace ProductHub.Storage.Services
                     await fileStream.CopyToAsync(stream);
                 }
 
-                return new ProcessResult(filePath, true);
+                return new ProcessResult(filePath, string.Empty, true);
             }
-
-            return new ProcessResult(string.Empty, false);
+            else
+            {
+                return new ProcessResult(string.Empty, $"FileStream or FileName is empty: {fileName}", false);
+            }
         }
 
         public Task<ProcessResult> Delete(string filePath)
@@ -46,11 +44,11 @@ namespace ProductHub.Storage.Services
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
-                return Task.FromResult(new ProcessResult(filePath, true));
+                return Task.FromResult(new ProcessResult(filePath, string.Empty, true));
             }
             else
             {
-                return Task.FromResult(new ProcessResult($"File not found: {filePath}", false));
+                return Task.FromResult(new ProcessResult(string.Empty, $"File not found: {filePath}", false));
             }
         }
 

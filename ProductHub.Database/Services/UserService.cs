@@ -10,13 +10,10 @@ using System.Threading.Tasks;
 
 namespace ProductHub.Database.Services
 {
-    public class UserService : IUserService
+    public class UserService(DBContext context) : IUserService
     {
-        private readonly DBContext _context;
-        public UserService(DBContext context)
-        {
-            this._context = context;
-        }
+        private readonly DBContext _context = context;
+
         public async Task<User?> Create(User user)
         {
             _context.Users.Add(user);
@@ -25,31 +22,31 @@ namespace ProductHub.Database.Services
             return user;
         }
 
-        public async Task<User?> Get(int id)
+        public async Task<User?> GetById(int id)
         {
             var user = await _context.Users.FindAsync(id);
 
             return user;
         }
 
-        public async Task<List<User?>> Get()
+        public async Task<List<User>> GetAll()
         {
             return await _context.Users.ToListAsync();
         }
 
         public async Task<User?> Update(User user)
         {
-            var _user = await _context.Users.FindAsync(user.Id);
+            var existingUser = await _context.Users.FindAsync(user.Id);
 
-            if (_user is not null)
+            if (existingUser is not null)
             {
-                _user.Name = user.Name;
-                _user.Email = user.Email;
+                existingUser.Name = user.Name;
+                existingUser.Email = user.Email;
 
                 await _context.SaveChangesAsync();
             }
 
-            return _user;
+            return existingUser;
         }
     }
 }

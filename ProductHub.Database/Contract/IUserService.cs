@@ -11,7 +11,7 @@ namespace ProductHub.Database.Contract
     {
         Task<User?> Create(User user);
         Task<User?> Update(User user);
-        Task<User?> Get(int id);
-        Task<List<User?>> Get();
+        Task<User?> GetById(int id);
+        Task<List<User>> GetAll();
     }
 }

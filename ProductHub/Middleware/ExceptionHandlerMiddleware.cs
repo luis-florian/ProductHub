@@ -3,13 +3,9 @@ using System.Net;
 
 namespace ProductHub.Middleware
 {
-    public class ExceptionHandlerMiddleware
+    public class ExceptionHandlerMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-        public ExceptionHandlerMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
+        private readonly RequestDelegate _next = next;
 
         public async Task InvokeAsync(HttpContext context)
         {

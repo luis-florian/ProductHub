@@ -11,13 +11,10 @@ using System.Xml.Linq;
 
 namespace ProductHub.Database.Services
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService(DBContext context) : ICategoryService
     {
-        private readonly DBContext _context;
-        public CategoryService(DBContext context)
-        {
-            this._context = context;
-        }
+        private readonly DBContext _context = context;
+
         public async Task<Category?> Create(Category category)
         {
             _context.Categories.Add(category);
@@ -26,30 +23,28 @@ namespace ProductHub.Database.Services
             return category;
         }
 
-        public async Task<Category?> Get(int id)
+        public async Task<Category?> GetById(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-
-            return category;
+            return await _context.Categories.FindAsync(id);
         }
 
-        public async Task<List<Category?>> Get()
+        public async Task<List<Category>> GetAll()
         {
             return await _context.Categories.ToListAsync();
         }
 
         public async Task<Category?> Update(Category category)
         {
-            var _category = await _context.Categories.FindAsync(category.Id);
+            var existingCategory = await _context.Categories.FindAsync(category.Id);
 
-            if (_category is not null)
+            if (existingCategory is not null)
             {
-                _category.Name = category.Name;
+                existingCategory.Name = category.Name;
 
                 await _context.SaveChangesAsync();
             }
 
-            return _category;
+            return existingCategory;
         }
     }
 }

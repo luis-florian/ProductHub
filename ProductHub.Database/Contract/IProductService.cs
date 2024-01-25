@@ -9,15 +9,15 @@ namespace ProductHub.Database.Contract
 {
     public interface IProductService
     {
-        Task<Product> Create(Product product);
-        Task<Product> Update(Product product);
-        Task<Product> Get(int id);
-        Task<List<Product>> Get();
+        Task<Product?> Create(Product product);
+        Task<Product?> Update(Product product);
+        Task<Product?> GetById(int id);
+        Task<List<Product>> GetAll();
         Task<List<Product>> GetProductsByCategory(int idCategory);
-        Task<Product> AddImagesToProduct(List<Image> images);
-        Task<Product> DeleteImageToProduct(Image image);
-        Task<Product> AddCommentToProduct(Comment comment);
-        Task<Product> DeleteCommentToProduct(Comment comments);
-        Task<Image> GetImageFromProduct(int idProduct, int idImage);
+        Task<Product?> AddImagesToProduct(List<Image> images);
+        Task<Product?> DeleteImageToProduct(Image image);
+        Task<Product?> AddCommentToProduct(Comment comment);
+        Task<Product?> DeleteCommentToProduct(Comment comments);
+        Task<Image?> GetImageFromProduct(int idProduct, int idImage);
     }
 }

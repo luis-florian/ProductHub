@@ -9,64 +9,56 @@ namespace ProductHub.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class CategoryController(IMapper mapper, ICategoryService categoryService) : ControllerBase
     {
-        private readonly ICategoryService _categoryService;
-        private readonly IMapper _mapper;
-        public CategoryController(IMapper mapper, ICategoryService categoryService) 
-        {
-            _categoryService = categoryService;
-            _mapper = mapper;
-        }
+        private readonly ICategoryService _categoryService = categoryService;
+        private readonly IMapper _mapper = mapper;
 
         [Route("{id}")]
         [HttpGet]
         public async Task<ActionResult<CategoryDto>> GetCategory(int id)
         {
-            var category = await _categoryService.Get(id);
-            var categoryDto = _mapper.Map<CategoryDto>(category);
+            var category = await _categoryService.GetById(id);
 
-            return Ok(categoryDto);
+            if (category is null)
+                return NotFound("Category Not Found");
+
+            return Ok(_mapper.Map<CategoryDto>(category));
         }
 
         [HttpGet]
         public async Task<ActionResult<CategoryDto>> GetCategories()
         {
-            var categories = await _categoryService.Get();
+            var categories = await _categoryService.GetAll();
 
-            if (categories is null)
-            {
+            if (categories is null || categories.Count == 0)
                 return NotFound("Categories Not Found");
-            }
 
-            var categoryDto = _mapper.Map<List<CategoryDto>>(categories);
-
-            return Ok(categoryDto);
+            return Ok(_mapper.Map<List<CategoryDto>>(categories));
         }
 
         [HttpPut]
         public async Task<ActionResult<CategoryDto>> UpdateCategory([FromBody] UpdateCategoryDto updateCategoryDto)
         {
             var category = _mapper.Map<Category>(updateCategoryDto);
-            var _category = await _categoryService.Update(category);
+            var existingCategory = await _categoryService.Update(category);
 
-            if (_category is null)
-                return NotFound("Note not found.");
+            if (existingCategory is null)
+                return NotFound("Category Not Found");
 
-            var CategoryDto = _mapper.Map<CategoryDto>(_category);
-
-            return Ok(CategoryDto);
+            return Ok(_mapper.Map<CategoryDto>(existingCategory));
         }
 
         [HttpPost]
-        public async Task<ActionResult<CategoryDto>> AddCategory([FromBody] CreateCategoryDto createCategoryDto)
+        public async Task<ActionResult> AddCategory([FromBody] CreateCategoryDto createCategoryDto)
         {
             var category = _mapper.Map<Category>(createCategoryDto);
-            var _category = await _categoryService.Create(category);
+            var existingCategory = await _categoryService.Create(category);
 
-            var CategoryDto = _mapper.Map<CategoryDto>(_category);
+            if (existingCategory is null)
+                return BadRequest("Category was not created");
 
-            return Ok(CategoryDto);
+            return Ok("Category Successfully Added");
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class FileUpload
     {
-        public IFormFile files { get; set; }
-        public int productId { get; set; }
+        public required IFormFile Files { get; set; }
+        public int ProductId { get; set; }
     }
 }

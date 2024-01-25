@@ -6,68 +6,33 @@ namespace ProductHub.Middleware
 {
     public class DtosProfile : Profile
     {
-        public DtosProfile() 
+        public DtosProfile()
         {
-            // Category 
+            CreateMap<Category, CreateCategoryDto>().ReverseMap();
+            CreateMap<Category, CategoryDto>().ReverseMap();
+            CreateMap<Category, UpdateCategoryDto>().ReverseMap();
 
-            this.CreateMap<Category, CreateCategoryDto>();
-            this.CreateMap<CreateCategoryDto, Category>();
+            CreateMap<User, CreateUserDto>().ReverseMap();
+            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UpdateUserDto>().ReverseMap();
 
-            this.CreateMap<Category, CategoryDto>();
-            this.CreateMap<CategoryDto, Category>();
+            CreateMap<Product, CreateProductDto>().ReverseMap();
+            CreateMap<Product, ProductDto>().ReverseMap();
+            CreateMap<Product, ProductsDto>().ReverseMap();
+            CreateMap<Product, UpdateProductDto>().ReverseMap();
 
-            this.CreateMap<Category, UpdateCategoryDto>();
-            this.CreateMap<UpdateCategoryDto, Category>();
+            CreateMap<Comment, CreateCommentDto>().ReverseMap();
+            CreateMap<Comment, CommentDto>().ReverseMap();
+            CreateMap<Comment, DeleteCommentDto>().ReverseMap();
 
-            // User
+            CreateMap<Image, ImageDto>().ReverseMap();
+            CreateMap<Image, CreateImageDto>().ReverseMap();
+            CreateMap<Image, DeleteImageDto>().ReverseMap();
 
-            this.CreateMap<User, CreateUserDto>();
-            this.CreateMap<CreateUserDto, User>();
-
-            this.CreateMap<User, UserDto>();
-            this.CreateMap<UserDto, User>();
-
-            this.CreateMap<User, UpdateUserDto>();
-            this.CreateMap<UpdateUserDto, User>();
-
-            // Product
-
-            this.CreateMap<Product, CreateProductDto>();
-            this.CreateMap<CreateProductDto, Product>();
-
-            this.CreateMap<Product, ProductDto>()
-                .ForMember(p => p.Category, opt => opt.MapFrom(src => src.Category))
-                .ForMember(p => p.Comments, opt => opt.MapFrom(src => src.Comments))
-                .ForMember(p => p.Images, opt => opt.MapFrom(src => src.Images));
-            this.CreateMap<Category, ProductDto>();
-            this.CreateMap<Comment, ProductDto>();
-            this.CreateMap<ProductDto, Product>();
-
-            this.CreateMap<Product, UpdateProductDto>();
-            this.CreateMap<UpdateProductDto, Product>();
-
-            // Comment
-
-            this.CreateMap<Comment, CreateCommentDto>();
-            this.CreateMap<CreateCommentDto, Comment>();
-
-            this.CreateMap<Comment, CommentDto>();
-            this.CreateMap<CommentDto, Comment>();
-            this.CreateMap<User, CommentDto>();
-
-            this.CreateMap<Comment, DeleteCommentDto>();
-            this.CreateMap<DeleteCommentDto, Comment>();
-
-            // image
-
-            this.CreateMap<Image, ImageDto>();
-            this.CreateMap<ImageDto, Image>();
-
-            this.CreateMap<Image, CreateImageDto>();
-            this.CreateMap<CreateImageDto, Image>();
-
-            this.CreateMap<Image, DeleteImageDto>();
-            this.CreateMap<DeleteImageDto, Image>();
+            CreateMap<Product, ProductDto>()
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category))
+                .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments))
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images));
         }
     }
 }

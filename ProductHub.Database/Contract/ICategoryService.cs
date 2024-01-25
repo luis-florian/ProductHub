@@ -11,7 +11,7 @@ namespace ProductHub.Database.Contract
     {
         Task<Category?> Create(Category category);
         Task<Category?> Update(Category category);
-        Task<Category?> Get(int id);
-        Task<List<Category?>> Get();
+        Task<Category?> GetById(int id);
+        Task<List<Category>> GetAll();
     }
 }
