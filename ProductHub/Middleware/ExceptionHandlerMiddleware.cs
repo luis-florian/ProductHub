@@ -1,4 +1,7 @@
-﻿using ProductHub.Model;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using ProductHub.Database.Model;
+using ProductHub.Model;
 using System.Net;
 
 namespace ProductHub.Middleware
@@ -12,6 +15,13 @@ namespace ProductHub.Middleware
             try
             {
                 await _next(context);
+            }
+            catch (MissingRelatedEntityException ex)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                context.Response.ContentType = "text/plain";
+
+                await context.Response.WriteAsync($"Not Found: {ex.Message}");
             }
             catch (Exception ex)
             {

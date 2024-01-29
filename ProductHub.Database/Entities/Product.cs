@@ -16,7 +16,7 @@ namespace ProductHub.Database.Entities
         public int Stock { get; set; }
 
         public required int CategoryId { get; set; }
-        public required Category Category { get; set; }
+        public Category? Category { get; set; }
 
         public ICollection<Image>? Images { get; set; }
         public ICollection<Comment>? Comments { get; set; }
