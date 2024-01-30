@@ -1,17 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProductHub.Database.Context;
-using ProductHub.Database.Contract;
 using ProductHub.Database.Entities;
 using ProductHub.Database.Model;
 using ProductHub.Database.Services;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
-using static System.Net.Mime.MediaTypeNames;
 using Image = ProductHub.Database.Entities.Image;
 
 namespace ProductHub.UnitTesting.Database
@@ -317,14 +309,131 @@ namespace ProductHub.UnitTesting.Database
             Assert.All(images, image => Assert.Contains(image, productResult.Images!));
         }
         [Fact]
-        public async Task DeleteCommentToProduct_ShouldDeleteCommentToProduct() 
-        { }
+        public async Task DeleteCommentToProduct_ShouldDeleteCommentToProduct()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseInMemoryDatabase(databaseName: "TestDB_DeleteCommentToProduct_ShouldDeleteCommentToProduct")
+                .Options;
+
+            using var context = new DBContext(options);
+            var productService = new ProductService(context);
+
+            var categoryService = new CategoryService(context);
+            var category = new Category { Name = "Test" };
+            var createdCategory = await categoryService.Create(category);
+
+            var product = new Product
+            {
+                Name = "Test",
+                Description = "Testing product",
+                Price = 30,
+                Stock = 210,
+                CategoryId = 1,
+            };
+
+            var createdProduct = await productService.Create(product);
+
+            var userService = new UserService(context);
+            var user = new User { Name = "John", Email = "john@example.com" };
+            var createdUser = await userService.Create(user);
+            
+            var comment = new Comment() { Content = "Test", ProductId = 1, UserId = 1 };
+
+            _ = await productService.AddCommentToProduct(comment);
+
+            // Act
+            var rproduct = await productService.DeleteCommentToProduct(comment);
+
+            // Assert
+            Assert.NotNull(rproduct);
+        }
         [Fact]
         public async Task DeleteImageToProduct_ShouldDeleteImageToProduct() 
-        { }
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseInMemoryDatabase(databaseName: "TestDB_DeleteImageToProduct_ShouldDeleteImageToProduct")
+                .Options;
+
+            using var context = new DBContext(options);
+            var productService = new ProductService(context);
+
+            var categoryService = new CategoryService(context);
+            var category = new Category { Name = "Test" };
+            var createdCategory = await categoryService.Create(category);
+
+            var product = new Product
+            {
+                Name = "Test",
+                Description = "Testing product",
+                Price = 30,
+                Stock = 210,
+                CategoryId = 1,
+            };
+
+            var createdProduct = await productService.Create(product);
+
+            var images = new List<Image>()
+                {
+                    new() { ProductId = 1, Url = "c:\\test\\image1.jpg" },
+                    new() { ProductId = 1, Url = "c:\\test\\image2.jpg" },
+                    new() { ProductId = 1, Url = "c:\\test\\image3.jpg" },
+                };
+
+            
+            _ = await productService.AddImagesToProduct(images);
+
+            // Act
+            var productResult = await productService.DeleteImageToProduct(images[0]);
+
+            // Assert
+            Assert.NotNull(productResult);
+            Assert.Equal(2, productResult.Images!.Count);
+        }
         [Fact]
         public async Task GetImageFromProduct_ShouldGetImageFromProduct() 
-        { }
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseInMemoryDatabase(databaseName: "TestDB_GetImageFromProduct_ShouldGetImageFromProduct")
+                .Options;
+
+            using var context = new DBContext(options);
+            var productService = new ProductService(context);
+
+            var categoryService = new CategoryService(context);
+            var category = new Category { Name = "Test" };
+            var createdCategory = await categoryService.Create(category);
+
+            var product = new Product
+            {
+                Name = "Test",
+                Description = "Testing product",
+                Price = 30,
+                Stock = 210,
+                CategoryId = 1,
+            };
+
+            var createdProduct = await productService.Create(product);
+
+            var images = new List<Image>()
+                {
+                    new() { ProductId = 1, Url = "c:\\test\\image1.jpg" },
+                    new() { ProductId = 1, Url = "c:\\test\\image2.jpg" },
+                    new() { ProductId = 1, Url = "c:\\test\\image3.jpg" },
+                };
+
+
+            _ = await productService.AddImagesToProduct(images);
+
+            // Act
+            var imageResult = await productService.GetImageFromProduct(createdProduct!.Id, images[2].Id);
+
+            // Assert
+            Assert.NotNull(imageResult);
+            Assert.Equal("c:\\test\\image3.jpg", imageResult.Url);
+        }
 
         // Invalids
         [Fact]
@@ -473,6 +582,134 @@ namespace ProductHub.UnitTesting.Database
             // Assert
             Assert.Null(result);
         }
+        [Fact]
+        public async Task DeleteCommentToProduct_ShouldNotFoundCommentToProduct()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseInMemoryDatabase(databaseName: "TestDB_DeleteCommentToProduct_ShouldNotFoundCommentToProduct")
+                .Options;
+
+            using var context = new DBContext(options);
+            var productService = new ProductService(context);
+
+            var categoryService = new CategoryService(context);
+            var category = new Category { Name = "Test" };
+            var createdCategory = await categoryService.Create(category);
+
+            var product = new Product
+            {
+                Name = "Test",
+                Description = "Testing product",
+                Price = 30,
+                Stock = 210,
+                CategoryId = 1,
+            };
+
+            var createdProduct = await productService.Create(product);
+
+            var userService = new UserService(context);
+            var user = new User { Name = "John", Email = "john@example.com" };
+            var createdUser = await userService.Create(user);
+
+            var comment = new Comment() { Content = "Test", ProductId = 1, UserId = 1 };
+
+            _ = await productService.AddCommentToProduct(comment);
+
+            var commentToFound = new Comment() { Content = "Test 2", ProductId = 1, UserId = 1, Id = 2 };
+
+            // Act
+            var rproduct = await productService.DeleteCommentToProduct(commentToFound);
+
+            // Assert
+            Assert.Null(rproduct);
+        }
+        [Fact]
+        public async Task DeleteImageToProduct_ShouldNotFoundImageToProduct()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseInMemoryDatabase(databaseName: "TestDB_DeleteImageToProduct_ShouldNotFoundImageToProduct")
+                .Options;
+
+            using var context = new DBContext(options);
+            var productService = new ProductService(context);
+
+            var categoryService = new CategoryService(context);
+            var category = new Category { Name = "Test" };
+            var createdCategory = await categoryService.Create(category);
+
+            var product = new Product
+            {
+                Name = "Test",
+                Description = "Testing product",
+                Price = 30,
+                Stock = 210,
+                CategoryId = 1,
+            };
+
+            var createdProduct = await productService.Create(product);
+
+            var images = new List<Image>()
+                {
+                    new() { ProductId = 1, Url = "c:\\test\\image1.jpg" },
+                    new() { ProductId = 1, Url = "c:\\test\\image2.jpg" },
+                    new() { ProductId = 1, Url = "c:\\test\\image3.jpg" },
+                };
+
+
+            _ = await productService.AddImagesToProduct(images);
+
+            var image = new Image() { ProductId = 1, Url = "c:\\test\\image4.jpg", Id = 4 };
+
+            // Act
+            var productResult = await productService.DeleteImageToProduct(image);
+
+            // Assert
+            Assert.Null(productResult);
+        }
+        [Fact]
+        public async Task GetImageFromProduct_ShouldNotFoundImageFromProduct()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseInMemoryDatabase(databaseName: "TestDB_GetImageFromProduct_ShouldNotFoundImageFromProduct")
+                .Options;
+
+            using var context = new DBContext(options);
+            var productService = new ProductService(context);
+
+            var categoryService = new CategoryService(context);
+            var category = new Category { Name = "Test" };
+            var createdCategory = await categoryService.Create(category);
+
+            var product = new Product
+            {
+                Name = "Test",
+                Description = "Testing product",
+                Price = 30,
+                Stock = 210,
+                CategoryId = 1,
+            };
+
+            var createdProduct = await productService.Create(product);
+
+            var images = new List<Image>()
+                {
+                    new() { ProductId = 1, Url = "c:\\test\\image1.jpg" },
+                    new() { ProductId = 1, Url = "c:\\test\\image2.jpg" },
+                    new() { ProductId = 1, Url = "c:\\test\\image3.jpg" },
+                };
+
+
+            _ = await productService.AddImagesToProduct(images);
+
+            // Act
+            var imageResult = await productService.GetImageFromProduct(createdProduct!.Id, 4);
+
+            // Assert
+            Assert.Null(imageResult);
+        }
 
         // Exceptions
         [Fact]
@@ -532,6 +769,250 @@ namespace ProductHub.UnitTesting.Database
 
             // Assert that the exception message is as expected
             Assert.Equal("Category with the specified Id doesn't exist.", exception.Message);
+        }
+        [Fact]
+        public async Task AddCommentToProduct_InvalidProduct()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseInMemoryDatabase(databaseName: "TestDB_AddCommentToProduct_InvalidProduct")
+                .Options;
+
+            using var context = new DBContext(options);
+            var productService = new ProductService(context);
+
+            var categoryService = new CategoryService(context);
+            var category = new Category { Name = "Test" };
+            var createdCategory = await categoryService.Create(category);
+
+            var product = new Product
+            {
+                Name = "Test",
+                Description = "Testing product",
+                Price = 30,
+                Stock = 210,
+                CategoryId = 1,
+            };
+
+            var createdProduct = await productService.Create(product);
+
+            var userService = new UserService(context);
+            var user = new User { Name = "John", Email = "john@example.com" };
+            var createdUser = await userService.Create(user);
+
+
+
+            var comment = new Comment() { Content = "Test", ProductId = 2, UserId = 1 };
+
+            // Assert
+            var exception = await Assert.ThrowsAsync<MissingRelatedEntityException>(async () => await productService.AddCommentToProduct(comment));
+
+            // Assert that the exception message is as expected
+            Assert.Equal("Product with the specified Id doesn't exist.", exception.Message);
+        }
+        [Fact]
+        public async Task AddCommentToProduct_InvalidUser() 
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseInMemoryDatabase(databaseName: "TestDB_AddCommentToProduct_InvalidUser")
+                .Options;
+
+            using var context = new DBContext(options);
+            var productService = new ProductService(context);
+
+            var categoryService = new CategoryService(context);
+            var category = new Category { Name = "Test" };
+            var createdCategory = await categoryService.Create(category);
+
+            var product = new Product
+            {
+                Name = "Test",
+                Description = "Testing product",
+                Price = 30,
+                Stock = 210,
+                CategoryId = 1,
+            };
+
+            var createdProduct = await productService.Create(product);
+
+            var userService = new UserService(context);
+            var user = new User { Name = "John", Email = "john@example.com" };
+            var createdUser = await userService.Create(user);
+
+
+
+            var comment = new Comment() { Content = "Test", ProductId = 1, UserId = 2 };
+
+            // Assert
+            var exception = await Assert.ThrowsAsync<MissingRelatedEntityException>(async () => await productService.AddCommentToProduct(comment));
+
+            // Assert that the exception message is as expected
+            Assert.Equal("User with the specified Id doesn't exist.", exception.Message);
+        }
+        [Fact]
+        public async Task AddImagesToProduct_ShouldInvalidProduct() 
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseInMemoryDatabase(databaseName: "TestDB_AddImagesToProduct_ShouldInvalidProduct")
+                .Options;
+
+            using var context = new DBContext(options);
+            var productService = new ProductService(context);
+
+            var categoryService = new CategoryService(context);
+            var category = new Category { Name = "Test" };
+            var createdCategory = await categoryService.Create(category);
+
+            var product = new Product
+            {
+                Name = "Test",
+                Description = "Testing product",
+                Price = 30,
+                Stock = 210,
+                CategoryId = 1,
+            };
+
+            var createdProduct = await productService.Create(product);
+
+            var images = new List<Image>()
+                {
+                    new() { ProductId = 2, Url = "c:\\test\\image1.jpg" },
+                    new() { ProductId = 2, Url = "c:\\test\\image2.jpg" },
+                    new() { ProductId = 2, Url = "c:\\test\\image3.jpg" },
+                };
+
+            // Assert
+            var exception = await Assert.ThrowsAsync<MissingRelatedEntityException>(async () => await productService.AddImagesToProduct(images));
+
+            // Assert that the exception message is as expected
+            Assert.Equal("Product with the specified Id doesn't exist.", exception.Message);
+        }
+        [Fact]
+        public async Task DeleteCommentToProduct_ShouldInvalidProduct() 
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseInMemoryDatabase(databaseName: "TestDB_DeleteCommentToProduct_ShouldInvalidProduct")
+                .Options;
+
+            using var context = new DBContext(options);
+            var productService = new ProductService(context);
+
+            var categoryService = new CategoryService(context);
+            var category = new Category { Name = "Test" };
+            var createdCategory = await categoryService.Create(category);
+
+            var product = new Product
+            {
+                Name = "Test",
+                Description = "Testing product",
+                Price = 30,
+                Stock = 210,
+                CategoryId = 1,
+            };
+
+            var createdProduct = await productService.Create(product);
+
+            var userService = new UserService(context);
+            var user = new User { Name = "John", Email = "john@example.com" };
+            var createdUser = await userService.Create(user);
+
+            var comment = new Comment() { Content = "Test", ProductId = 1, UserId = 1 };
+
+            _ = await productService.AddCommentToProduct(comment);
+
+            var commentToFound = new Comment() { Content = "Test 2", ProductId = 2, UserId = 1, Id = 1 };
+
+            // Assert
+            var exception = await Assert.ThrowsAsync<MissingRelatedEntityException>(async () => await productService.DeleteCommentToProduct(commentToFound));
+
+            // Assert that the exception message is as expected
+            Assert.Equal("Product with the specified Id doesn't exist.", exception.Message);
+        }
+        [Fact]
+        public async Task DeleteImageToProduct_ShouldInvalidProduct()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseInMemoryDatabase(databaseName: "TestDB_DeleteImageToProduct_ShouldInvalidProduct")
+                .Options;
+
+            using var context = new DBContext(options);
+            var productService = new ProductService(context);
+
+            var categoryService = new CategoryService(context);
+            var category = new Category { Name = "Test" };
+            var createdCategory = await categoryService.Create(category);
+
+            var product = new Product
+            {
+                Name = "Test",
+                Description = "Testing product",
+                Price = 30,
+                Stock = 210,
+                CategoryId = 1,
+            };
+
+            var createdProduct = await productService.Create(product);
+
+            var images = new List<Image>()
+                {
+                    new() { ProductId = 2, Url = "c:\\test\\image1.jpg" },
+                    new() { ProductId = 2, Url = "c:\\test\\image2.jpg" },
+                    new() { ProductId = 2, Url = "c:\\test\\image3.jpg" },
+                };
+
+            var imageNotFound = new Image() { Id = 1, ProductId = 2, Url = "c:\\test\\image1.jpg" };
+
+            // Assert
+            var exception = await Assert.ThrowsAsync<MissingRelatedEntityException>(async () => await productService.DeleteImageToProduct(imageNotFound));
+
+            // Assert that the exception message is as expected
+            Assert.Equal("Product with the specified Id doesn't exist.", exception.Message);
+        }
+        [Fact]
+        public async Task GetImageFromProduct_ShouldInvalidProduct()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DBContext>()
+                .UseInMemoryDatabase(databaseName: "TestDB_GetImageFromProduct_ShouldInvalidProduct")
+                .Options;
+
+            using var context = new DBContext(options);
+            var productService = new ProductService(context);
+
+            var categoryService = new CategoryService(context);
+            var category = new Category { Name = "Test" };
+            var createdCategory = await categoryService.Create(category);
+
+            var product = new Product
+            {
+                Name = "Test",
+                Description = "Testing product",
+                Price = 30,
+                Stock = 210,
+                CategoryId = 1,
+            };
+
+            var createdProduct = await productService.Create(product);
+
+            var images = new List<Image>()
+                {
+                    new() { ProductId = 1, Url = "c:\\test\\image1.jpg" },
+                    new() { ProductId = 1, Url = "c:\\test\\image2.jpg" },
+                    new() { ProductId = 1, Url = "c:\\test\\image3.jpg" },
+                };
+
+
+            _ = await productService.AddImagesToProduct(images);
+
+            // Assert
+            var exception = await Assert.ThrowsAsync<MissingRelatedEntityException>(async () => await productService.GetImageFromProduct(2, images[2].Id));
+
+            // Assert that the exception message is as expected
+            Assert.Equal("Product with the specified Id doesn't exist.", exception.Message);
         }
     }
 }

@@ -92,7 +92,6 @@ namespace ProductHub.Database.Services
                 })
                 .ToListAsync();
         }
-
         public async Task<Product?> AddCommentToProduct(Comment comment)
         {
             var product = await _context.Products.FindAsync(comment.ProductId)

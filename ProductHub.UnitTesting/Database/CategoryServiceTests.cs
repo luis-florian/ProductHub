@@ -2,11 +2,6 @@
 using ProductHub.Database.Context;
 using ProductHub.Database.Entities;
 using ProductHub.Database.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace ProductHub.UnitTesting.Database
